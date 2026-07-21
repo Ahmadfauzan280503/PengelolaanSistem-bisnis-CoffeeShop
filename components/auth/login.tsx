@@ -1,79 +1,117 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { GalleryVerticalEndIcon } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { createAuthCookie } from "@/actions/auth.action";
-import { LoginSchema } from "@/helpers/schemas";
-import { LoginFormType } from "@/helpers/types";
-import { Button, Input } from "@nextui-org/react";
-import { Formik } from "formik";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useState } from "react";
 
-export const Login = () => {
+export const Login = ({
+  className,
+  ...props
+}: React.ComponentProps<"div">) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const initialValues: LoginFormType = {
-    email: "admin@acme.com",
-    password: "admin",
-  };
-
-  const handleLogin = useCallback(
-    async (values: LoginFormType) => {
-      // `values` contains email & password. You can use provider to connect user
-
+  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
       await createAuthCookie();
       router.replace("/");
-    },
-    [router]
-  );
+    } catch (error) {
+      console.error("Login failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await signIn("google", { callbackUrl: "/" });
+    } catch (error) {
+      console.error("Google login failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <>
-      <div className='text-center text-[25px] font-bold mb-6'>Login</div>
-
-      <Formik
-        initialValues={initialValues}
-        validationSchema={LoginSchema}
-        onSubmit={handleLogin}>
-        {({ values, errors, touched, handleChange, handleSubmit }) => (
-          <>
-            <div className='flex flex-col w-1/2 gap-4 mb-4'>
-              <Input
-                variant='bordered'
-                label='Email'
-                type='email'
-                value={values.email}
-                isInvalid={!!errors.email && !!touched.email}
-                errorMessage={errors.email}
-                onChange={handleChange("email")}
-              />
-              <Input
-                variant='bordered'
-                label='Password'
-                type='password'
-                value={values.password}
-                isInvalid={!!errors.password && !!touched.password}
-                errorMessage={errors.password}
-                onChange={handleChange("password")}
-              />
-            </div>
-
-            <Button
-              onPress={() => handleSubmit()}
-              variant='flat'
-              color='primary'>
-              Login
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <form onSubmit={handleEmailLogin}>
+        <FieldGroup>
+          <div className="flex flex-col items-center gap-2 text-center">
+            <a
+              href="#"
+              className="flex flex-col items-center gap-2 font-medium"
+            >
+              <div className="flex size-8 items-center justify-center rounded-md">
+                <GalleryVerticalEndIcon className="size-6" />
+              </div>
+              <span className="sr-only">Supervisor Dashboard</span>
+            </a>
+            <h1 className="text-xl font-bold">Welcome back</h1>
+            <FieldDescription>
+              Login to your Supervisor Dashboard
+            </FieldDescription>
+          </div>
+          <Field>
+            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Input
+              id="email"
+              type="email"
+              placeholder="admin@example.com"
+              required
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              required
+            />
+          </Field>
+          <Field>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
             </Button>
-          </>
-        )}
-      </Formik>
-
-      <div className='font-light text-slate-400 mt-4 text-sm'>
-        Don&apos;t have an account ?{" "}
-        <Link href='/register' className='font-bold'>
-          Register here
-        </Link>
-      </div>
-    </>
+          </Field>
+          <FieldSeparator>Or</FieldSeparator>
+          <Field>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isLoading}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                  d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                  fill="currentColor"
+                />
+              </svg>
+              Continue with Google
+            </Button>
+          </Field>
+        </FieldGroup>
+      </form>
+      <FieldDescription className="px-6 text-center">
+        By clicking continue, you agree to our{" "}
+        <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+      </FieldDescription>
+    </div>
   );
 };

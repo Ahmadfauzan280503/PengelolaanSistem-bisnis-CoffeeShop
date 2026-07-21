@@ -8,9 +8,12 @@ import { users } from "./data";
 interface Props {
   user: (typeof users)[number];
   columnKey: string | React.Key;
+  onDelete?: () => void;
+  onEdit?: () => void;
+  onView?: () => void;
 }
 
-export const RenderCell = ({ user, columnKey }: Props) => {
+export const RenderCell = ({ user, columnKey, onDelete, onEdit, onView }: Props) => {
   // @ts-ignore
   const cellValue = user[columnKey];
   switch (columnKey) {
@@ -58,14 +61,14 @@ export const RenderCell = ({ user, columnKey }: Props) => {
         <div className="flex items-center gap-4 ">
           <div>
             <Tooltip content="Details">
-              <button onClick={() => console.log("View user", user.id)}>
+              <button onClick={onView}>
                 <EyeIcon size={20} fill="#979797" />
               </button>
             </Tooltip>
           </div>
           <div>
             <Tooltip content="Edit user" color="secondary">
-              <button onClick={() => console.log("Edit user", user.id)}>
+              <button onClick={onEdit}>
                 <EditIcon size={20} fill="#979797" />
               </button>
             </Tooltip>
@@ -74,9 +77,8 @@ export const RenderCell = ({ user, columnKey }: Props) => {
             <Tooltip
               content="Delete user"
               color="danger"
-              onClick={() => console.log("Delete user", user.id)}
             >
-              <button>
+              <button onClick={onDelete}>
                 <DeleteIcon size={20} fill="#FF0080" />
               </button>
             </Tooltip>

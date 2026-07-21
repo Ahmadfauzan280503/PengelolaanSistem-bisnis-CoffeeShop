@@ -19,8 +19,8 @@ interface Company {
 
 export const CompaniesDropdown = () => {
   const [company, setCompany] = useState<Company>({
-    name: "Acme Co.",
-    location: "Palo Alto, CA",
+    name: "Admin",
+    location: "Kotacoffee.id",
     logo: <AcmeIcon />,
   });
   return (
@@ -48,21 +48,21 @@ export const CompaniesDropdown = () => {
           if (e === "1") {
             setCompany({
               name: "Facebook",
-              location: "San Fransico, CA",
+              location: "Kotacoffee.id",
               logo: <AcmeIcon />,
             });
           }
           if (e === "2") {
             setCompany({
               name: "Instagram",
-              location: "Austin, Tx",
+              location: "https://instagram.com/kotacoffee.id",
               logo: <AcmeLogo />,
             });
           }
           if (e === "3") {
             setCompany({
               name: "Twitter",
-              location: "Brooklyn, NY",
+              location: "Kotacoffee.id",
               logo: <AcmeIcon />,
             });
           }
@@ -80,7 +80,7 @@ export const CompaniesDropdown = () => {
           <DropdownItem
             key="1"
             startContent={<AcmeIcon />}
-            description="San Fransico, CA"
+            description="Kotacoffee.id"
             classNames={{
               base: "py-4",
               title: "text-base font-semibold",
@@ -91,7 +91,7 @@ export const CompaniesDropdown = () => {
           <DropdownItem
             key="2"
             startContent={<AcmeLogo />}
-            description="Austin, Tx"
+            description="Kotacoffee.id"
             classNames={{
               base: "py-4",
               title: "text-base font-semibold",
@@ -102,7 +102,7 @@ export const CompaniesDropdown = () => {
           <DropdownItem
             key="3"
             startContent={<AcmeIcon />}
-            description="Brooklyn, NY"
+            description="Kotacoffee.id"
             classNames={{
               base: "py-4",
               title: "text-base font-semibold",
@@ -113,13 +113,13 @@ export const CompaniesDropdown = () => {
           <DropdownItem
             key="4"
             startContent={<AcmeIcon />}
-            description="Palo Alto, CA"
+            description="Kotacoffee.id"
             classNames={{
               base: "py-4",
               title: "text-base font-semibold",
             }}
           >
-            Acme Co.
+            Kotacoffee.id
           </DropdownItem>
         </DropdownSection>
       </DropdownMenu>

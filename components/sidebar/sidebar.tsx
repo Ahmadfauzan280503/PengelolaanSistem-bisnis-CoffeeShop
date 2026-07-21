@@ -39,65 +39,104 @@ export const SidebarWrapper = () => {
         </div>
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
-            <SidebarItem
-              title="Home"
-              icon={<HomeIcon />}
-              isActive={pathname === "/"}
-              href="/"
-            />
-            <SidebarMenu title="Main Menu">
+            {/* ====== HRD Dashboard ====== */}
+            <SidebarMenu title="HRD Dashboard">
               <SidebarItem
-                isActive={pathname === "/accounts"}
-                title="Accounts"
+                title="Dashboard HRD"
+                icon={<HomeIcon />}
+                isActive={pathname === "/hrd"}
+                href="/hrd"
+              />
+              <SidebarItem
+                isActive={pathname === "/akun-kasir"}
+                title="Akun Kasir"
                 icon={<AccountsIcon />}
-                href="accounts"
+                href="/akun-kasir"
               />
               <SidebarItem
-                isActive={pathname === "/payments"}
-                title="Payments"
-                icon={<PaymentsIcon />}
-              />
-              <CollapseItems
-                icon={<BalanceIcon />}
-                items={["Banks Accounts", "Credit Cards", "Loans"]}
-                title="Balances"
-              />
-              <SidebarItem
-                isActive={pathname === "/customers"}
-                title="Customers"
+                isActive={pathname === "/karyawan"}
+                title="Karyawan"
                 icon={<CustomersIcon />}
+                href="/karyawan"
               />
               <SidebarItem
                 isActive={pathname === "/products"}
-                title="Products"
+                title="Kelola Produk"
                 icon={<ProductsIcon />}
+                href="/products"
+              />
+            </SidebarMenu>
+
+            {/* ====== Staff Finance ====== */}
+            <SidebarMenu title="Staff Finance">
+              <SidebarItem
+                isActive={pathname === "/finance"}
+                title="Dashboard Finance"
+                icon={<BalanceIcon />}
+                href="/finance"
               />
               <SidebarItem
-                isActive={pathname === "/reports"}
-                title="Reports"
+                isActive={pathname === "/Penjualan"}
+                title="Laporan Penjualan"
+                icon={<AccountsIcon />}
+                href="/Penjualan"
+              />
+              <CollapseItems
+                icon={<PaymentsIcon />}
+                title="Laporan Pembayaran"
+                items={[
+                  { name: "Ringkasan", href: "/payments" },
+                  { name: "Gojek", href: "/payments/gojek" },
+                  { name: "Grab", href: "/payments/grab" },
+                  { name: "ShopeeFood", href: "/payments/shopefood" },
+                  { name: "Cash", href: "/payments/cash" },
+                  { name: "QRIS", href: "/payments/qris" },
+                ]}
+              />
+              <SidebarItem
+                isActive={pathname === "/data-analyst"}
+                title="Data Analyst"
                 icon={<ReportsIcon />}
+                href="/data-analyst"
               />
             </SidebarMenu>
 
-            <SidebarMenu title="General">
+            {/* ====== Staff Supervaisor ====== */}
+            <SidebarMenu title="Staff Supervaisor">
               <SidebarItem
-                isActive={pathname === "/developers"}
-                title="Developers"
-                icon={<DevIcon />}
-              />
-              <SidebarItem
-                isActive={pathname === "/view"}
-                title="View Test Data"
+                isActive={pathname === "/supervaisor"}
+                title="Dashboard SPV"
                 icon={<ViewIcon />}
+                href="/supervaisor"
               />
               <SidebarItem
-                isActive={pathname === "/settings"}
-                title="Settings"
-                icon={<SettingsIcon />}
+                isActive={pathname === "/data-bahan"}
+                title="Data Bahan"
+                icon={<ProductsIcon />}
+                href="/data-bahan"
+              />
+              <SidebarItem
+                isActive={pathname === "/sisa-stok-bahan"}
+                title="Sisa Stok Bahan"
+                icon={<BalanceIcon />}
+                href="/sisa-stok-bahan"
+              />
+              <SidebarItem
+                isActive={pathname === "/Bahan-masuk"}
+                title="Bahan Masuk"
+                icon={<ViewIcon />}
+                href="/Bahan-masuk"
+              />
+              <SidebarItem
+                isActive={pathname === "/reportbarang"}
+                title="Bahan Rusak"
+                icon={<ReportsIcon />}
+                href="/reportbarang"
               />
             </SidebarMenu>
 
-            <SidebarMenu title="Updates">
+            {/* ====== Settings ====== */}
+            <SidebarMenu title="General">
               <SidebarItem
                 isActive={pathname === "/changelog"}
                 title="Changelog"

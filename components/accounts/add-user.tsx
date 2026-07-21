@@ -17,7 +17,7 @@ export const AddUser = () => {
     <div>
       <>
         <Button onPress={onOpen} color="primary">
-          Add User
+          Tambah Laporan Pendapatan
         </Button>
         <Modal
           isOpen={isOpen}
@@ -28,27 +28,30 @@ export const AddUser = () => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Add User
+                  Tambah Laporan Pendapatan
                 </ModalHeader>
                 <ModalBody>
-                  <Input label="Email" variant="bordered" />
-                  <Input label="First Name" variant="bordered" />
-                  <Input label="Last Name" variant="bordered" />
-                  <Input label="Phone Number" variant="bordered" />
-
-                  <Input label="Password" type="password" variant="bordered" />
-                  <Input
-                    label="Confirm Password"
-                    type="password"
-                    variant="bordered"
-                  />
+                  <Input label="Tanggal" variant="bordered" type="date" placeholder=" " />
+                  <Input label="Nama Kasir" variant="bordered" />
+                  <Input label="Cash" variant="bordered" type="number" startContent="Rp" />
+                  <div className="flex gap-4">
+                    <Input label="Gojek (Kota coffee)" variant="bordered" type="number" startContent="Rp" />
+                  </div>
+                  <div className="flex gap-4">
+                    <Input label="Grab (Kota coffee)" variant="bordered" type="number" startContent="Rp" />
+                  </div>
+                  <div className="flex gap-4">
+                    <Input label="ShopeeFood (Kota coffee)" variant="bordered" type="number" startContent="Rp" />
+                  </div>
+                  <Input label="QRIS" variant="bordered" type="number" startContent="Rp" />
+                  <Input label="Pengeluaran" variant="bordered" type="number" startContent="Rp" />
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onClick={onClose}>
+                  <Button color="danger" variant="flat" onPress={onClose}>
                     Close
                   </Button>
                   <Button color="primary" onPress={onClose}>
-                    Add User
+                    Simpan Laporan
                   </Button>
                 </ModalFooter>
               </>
