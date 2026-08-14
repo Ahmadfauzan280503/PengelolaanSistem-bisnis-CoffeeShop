@@ -103,7 +103,7 @@ export const LandingPage = () => {
         {/* Playful Pink Bubble Logo */}
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/")}>
           <span className="text-4xl font-black tracking-tighter text-[#E94E77] drop-shadow-[3px_3px_0px_#2D1B4E] font-mono uppercase border-4 border-[#2D1B4E] bg-white px-4 py-1.5 rounded-2xl transform -rotate-2 hover:rotate-0 transition-transform">
-            Kotacoffee.id
+            Mycoffeeza
           </span>
         </div>
         
@@ -134,7 +134,7 @@ export const LandingPage = () => {
           {/* Main Playful Neo-Brutalist Title */}
           <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-[100px] font-black tracking-tight text-[#2D1B4E] leading-[0.9] font-sans drop-shadow-[4px_4px_0px_rgba(45,27,78,0.08)]">
             WELCOME TO <br />
-            KOTACOFFEE.ID
+            MYCOFFEEZA
           </h1>
           
           {/* Circular Button 'Drink it up' */}
@@ -161,7 +161,7 @@ export const LandingPage = () => {
               {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={15} fill="currentColor" className="stroke-[#2D1B4E] stroke-2" />)}
             </div>
             <p className="text-xs font-extrabold text-[#2D1B4E] leading-relaxed">
-              &ldquo;Minuman energi paling menyegarkan musim panas ini! Rasa buah aslinya benar-benar memulihkan stamina secara instan.&rdquo;
+              &ldquo;menghadirkan kopi premium asli dari dataran tinggi Pegunungan Latimojong, Enrekang, Sulawesi Selatan, dengan cita rasa khas, kualitas terbaik, dan karakter lokal yang autentik.&rdquo;
             </p>
             <div className="flex items-center gap-2 pt-2 border-t-2 border-dashed border-gray-150">
               <div className="flex -space-x-2">
@@ -181,19 +181,19 @@ export const LandingPage = () => {
                   size: "w-32 sm:w-44 h-56 sm:h-80", 
                   rounded: "rounded-[28px] sm:rounded-[40px]",
                   hoverAnim: { scale: 1.02, y: -10 },
-                  fallbackImg: "./produk/coffee/Cold Brew.jpeg"
+                  fallbackImg: "./produk/mycoffeeza/beeenscoffeeza 2.jpg"
                 },
                 { 
                   size: "w-36 sm:w-52 h-64 sm:h-96", 
                   rounded: "rounded-[32px] sm:rounded-[48px]",
                   hoverAnim: { scale: 1.02, y: -15 },
-                  fallbackImg: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=500&q=80"
+                  fallbackImg: "./produk/mycoffeeza/mesin.jpg"
                 },
                 { 
                   size: "w-32 sm:w-44 h-56 sm:h-80", 
                   rounded: "rounded-[28px] sm:rounded-[40px]",
                   hoverAnim: { scale: 1.02, y: -10 },
-                  fallbackImg: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=500&q=80"
+                  fallbackImg: "./produk/mycoffeeza/beenscoffeeza.jpg"
                 },
               ];
 
@@ -432,13 +432,13 @@ export const LandingPage = () => {
       <section id="social" className="max-w-7xl mx-auto px-6 py-12 mb-24 border-t-4 border-[#2D1B4E]/10">
         <div className="text-center mb-16 pt-12">
           <span className="bg-[#E0F2FE] text-[#0369A1] text-[10px] font-black px-3.5 py-1.5 rounded-full uppercase border-2 border-[#2D1B4E]">On Social</span>
-          <h2 className="text-4xl font-black mt-3">@manamate</h2>
+          <h2 className="text-4xl font-black mt-3">MY Produk Beans</h2>
           <p className="text-zinc-400 text-xs mt-1.5 font-bold">Kirim foto Anda dengan kaleng Mana dan gunakan tagar #ManaMate untuk mendapatkan hadiah bulanan.</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="bg-[#FCE7F3] rounded-[24px] aspect-square border-4 border-[#2D1B4E] shadow-[4px_4px_0px_#2D1B4E] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-            <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=500&q=80" alt="Instagram 1" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
+            <img src="./produk/mycoffeeza/1.png" alt="Instagram 1" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
             <div className="absolute inset-0 bg-black/10 z-0"></div>
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
               <span className="text-white drop-shadow-md text-xs font-mono font-black">#01</span>
@@ -446,19 +446,14 @@ export const LandingPage = () => {
             </div>
           </div>
           <div className="bg-[#FEF3C7] rounded-[24px] aspect-square border-4 border-[#2D1B4E] shadow-[4px_4px_0px_#2D1B4E] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-            <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=500&q=80" alt="Instagram 2" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
+            <img src="./produk/mycoffeeza/3.png" alt="Instagram 2" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
             <div className="absolute inset-0 bg-black/10 z-0"></div>
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
               <span className="text-white drop-shadow-md text-xs font-mono font-black">#02</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5.5 h-5.5 text-white drop-shadow-md">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-              </svg>
             </div>
           </div>
           <div className="bg-[#E0F2FE] rounded-[24px] aspect-square border-4 border-[#2D1B4E] shadow-[4px_4px_0px_#2D1B4E] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&q=80" alt="Instagram 3" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
+            <img src="./produk/mycoffeeza/4.png" alt="Instagram 3" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
             <div className="absolute inset-0 bg-black/10 z-0"></div>
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
               <span className="text-white drop-shadow-md text-xs font-mono font-black">#03</span>
@@ -466,19 +461,14 @@ export const LandingPage = () => {
             </div>
           </div>
           <div className="bg-[#ECEFfe] rounded-[24px] aspect-square border-4 border-[#2D1B4E] shadow-[4px_4px_0px_#2D1B4E] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-            <img src="https://images.unsplash.com/photo-1495474472201-447547ff5661?w=500&q=80" alt="Instagram 4" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
+            <img src="./produk/mycoffeeza/7.png" alt="Instagram 4" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
             <div className="absolute inset-0 bg-black/10 z-0"></div>
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
               <span className="text-white drop-shadow-md text-xs font-mono font-black">#04</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5.5 h-5.5 text-white drop-shadow-md">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-              </svg>
             </div>
           </div>
           <div className="bg-[#FCE7F3] rounded-[24px] aspect-square border-4 border-[#2D1B4E] shadow-[4px_4px_0px_#2D1B4E] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden group">
-            <img src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=500&q=80" alt="Instagram 5" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
+            <img src="./produk/mycoffeeza/6.png" alt="Instagram 5" className="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-500" />
             <div className="absolute inset-0 bg-black/10 z-0"></div>
             <div className="relative z-10 p-4 flex flex-col justify-between h-full">
               <span className="text-white drop-shadow-md text-xs font-mono font-black">#05</span>
@@ -514,6 +504,7 @@ export const LandingPage = () => {
               <ul className="space-y-2 text-xs font-black text-[#2D1B4E] uppercase">
                 <li><a href="#story" className="hover:text-[#E94E77]">Review</a></li>
                 <li><a href="#story" className="hover:text-[#E94E77]">Community</a></li>
+                <li><a href="https://www.instagram.com/mycoffeeza?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" className="hover:text-[#E94E77]">Instagram</a></li>
               </ul>
             </div>
             <div className="space-y-4">
@@ -534,7 +525,7 @@ export const LandingPage = () => {
           {/* Right Giant Bubble Logo Card */}
           <div className="space-y-4 text-left xl:text-right w-full xl:w-auto xl:flex-1 overflow-hidden mt-8 xl:mt-0">
             <span className="text-[9vw] xl:text-[85px] leading-none font-black tracking-tight text-[#E94E77] block uppercase drop-shadow-[4px_4px_0px_#2D1B4E] transform -rotate-1 select-none overflow-visible whitespace-normal break-words">
-              Kotacoffee.id
+              My Coffeeza
             </span>
             <p className="text-[#2D1B4E] text-xs font-extrabold max-w-[280px] xl:ml-auto pt-2">
               We carefully crafted each can with all the benefits for the right time!
@@ -662,6 +653,36 @@ export const LandingPage = () => {
           )}
         </ModalContent>
       </Modal>
+
+      {/* ================= FLOATING WHATSAPP BUTTON ================= */}
+      <a
+        href="https://wa.me/6281356340877?text=Halo%20Mycoffeeza%2C%20saya%20ingin%20bertanya%20tentang%20menu%20dan%20layanan%20Anda!"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 group"
+        aria-label="Chat via WhatsApp"
+      >
+        {/* Pulse ring animation */}
+        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30 pointer-events-none" />
+        
+        {/* Button body */}
+        <div className="relative w-16 h-16 bg-[#25D366] rounded-full border-4 border-[#2D1B4E] shadow-[4px_4px_0px_#2D1B4E] flex items-center justify-center hover:scale-110 hover:shadow-[6px_6px_0px_#2D1B4E] active:scale-95 active:shadow-[2px_2px_0px_#2D1B4E] transition-all duration-200 cursor-pointer">
+          {/* WhatsApp SVG Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 32 32"
+            fill="white"
+            className="w-8 h-8"
+          >
+            <path d="M16.004 2.667A13.2 13.2 0 0 0 2.88 19.307L1.333 30.667l11.627-1.52A13.2 13.2 0 1 0 16.004 2.667zm0 24.266a10.93 10.93 0 0 1-5.893-1.72l-.413-.253-4.32.56.573-4.187-.267-.427A10.933 10.933 0 1 1 16.004 26.933zm6-8.16c-.333-.167-1.96-.967-2.267-1.08-.307-.107-.527-.167-.747.167s-.86 1.08-1.053 1.3-.387.253-.72.087-1.4-.517-2.667-1.647c-.987-.88-1.653-1.967-1.847-2.3s-.02-.513.147-.68c.153-.147.333-.387.5-.58s.22-.333.333-.553.053-.42-.027-.587-.747-1.8-1.02-2.467c-.267-.64-.54-.553-.747-.567h-.64a1.227 1.227 0 0 0-.887.413 3.727 3.727 0 0 0-1.16 2.773c0 1.633 1.193 3.213 1.36 3.433s2.347 3.58 5.687 5.02c.793.347 1.413.553 1.9.707a4.573 4.573 0 0 0 2.1.133c.64-.093 1.96-.8 2.24-1.573s.28-1.44.193-1.573-.307-.227-.64-.393z" />
+          </svg>
+        </div>
+
+        {/* Tooltip on hover */}
+        <div className="absolute bottom-20 right-0 bg-white text-[#2D1B4E] text-xs font-black px-4 py-2 rounded-xl border-2 border-[#2D1B4E] shadow-[3px_3px_0px_#2D1B4E] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          Chat via WhatsApp 💬
+        </div>
+      </a>
 
     </div>
   );
