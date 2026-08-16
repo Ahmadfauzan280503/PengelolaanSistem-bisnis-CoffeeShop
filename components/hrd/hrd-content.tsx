@@ -92,8 +92,9 @@ export const HrdContent = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [financeOverview, setFinanceOverview] = useState<any>(null);
   const { isOpen: isProdOpen, onOpen: onProdOpen, onOpenChange: onProdChange } = useDisclosure();
-  const [prodForm, setProdForm] = useState<any>({ name: "", category: "Coffee", price: 0, stock: 0, is_bestseller: false, is_discount: false, discount_amount: 0, status: "Tersedia", image_url: "" });
+  const [prodForm, setProdForm] = useState<any>({ name: "", category: "Coffee", price: 0, stock: 0, is_bestseller: false, is_discount: false, discount_amount: 0, status: "Tersedia", image_url: "", description: "" });
   const [editProdId, setEditProdId] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Toast state
   const [toast, setToast] = useState<{show: boolean, message: string, type: "success" | "error"}>({ show: false, message: "", type: "success" });
@@ -217,7 +218,7 @@ export const HrdContent = () => {
       fetchData();
       showToast("Produk berhasil disimpan!");
       onProdChange();
-      setProdForm({ name: "", category: "Coffee", price: 0, stock: 0, is_bestseller: false, is_discount: false, discount_amount: 0, status: "Tersedia", image_url: "" });
+      setProdForm({ name: "", category: "Coffee", price: 0, stock: 0, is_bestseller: false, is_discount: false, discount_amount: 0, status: "Tersedia", image_url: "", description: "" });
       setEditProdId(null);
     } catch (error) {
       console.error(error);
@@ -229,7 +230,8 @@ export const HrdContent = () => {
     setProdForm({
       name: p.name, category: p.category, price: p.price,
       stock: p.stock, is_bestseller: p.is_bestseller, is_discount: p.is_discount,
-      discount_amount: p.discount_amount, status: p.status, image_url: p.image_url || ""
+      discount_amount: p.discount_amount, status: p.status, image_url: p.image_url || "",
+      description: p.description || ""
     });
     setEditProdId(p.id);
     onProdOpen();
@@ -806,7 +808,7 @@ export const HrdContent = () => {
     <div className="flex flex-col gap-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-gray-900">Manajemen Produk</h2>
-        <Button className="bg-emerald-500 text-white rounded-xl h-10 px-5 font-semibold" startContent={<Plus className="w-4 h-4" />} onPress={() => { setEditProdId(null); setProdForm({ name: "", category: "Coffee", price: 0, stock: 0, is_bestseller: false, is_discount: false, discount_amount: 0, status: "Tersedia" }); onProdOpen(); }}>Tambah Produk Baru</Button>
+        <Button className="bg-emerald-500 text-white rounded-xl h-10 px-5 font-semibold" startContent={<Plus className="w-4 h-4" />} onPress={() => { setEditProdId(null); setProdForm({ name: "", category: "Coffee", price: 0, stock: 0, is_bestseller: false, is_discount: false, discount_amount: 0, status: "Tersedia", image_url: "", description: "" }); onProdOpen(); }}>Tambah Produk Baru</Button>
       </div>
 
       {/* Quick Stats */}
@@ -866,14 +868,14 @@ export const HrdContent = () => {
         </table>
         </div>
       </div>
-
-      <Modal isOpen={isProdOpen} onOpenChange={onProdChange}>
+      <Modal isOpen={isProdOpen} onOpenChange={onProdChange} size="lg" scrollBehavior="inside">
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">{editProdId ? "Edit Produk" : "Tambah Produk"}</ModalHeader>
               <ModalBody>
-                <Input label="Nama Produk" placeholder="e.g. Kopi Aren" value={prodForm.name} onChange={(e) => setProdForm({...prodForm, name: e.target.value})} />
+                <Input label="Nama Produk" placeholder="e.g. Robusta Mamasa" value={prodForm.name} onChange={(e) => setProdForm({...prodForm, name: e.target.value})} />
+                <Textarea label="Deskripsi Produk" placeholder="Tulis deskripsi singkat tentang produk ini..." minRows={2} maxRows={4} value={prodForm.description} onChange={(e) => setProdForm({...prodForm, description: e.target.value})} />
                 <Select label="Kategori" selectedKeys={[prodForm.category]} onChange={(e) => setProdForm({...prodForm, category: e.target.value})}>
                   <SelectItem key="Coffee" value="Coffee">Coffee</SelectItem>
                   <SelectItem key="Non-Coffee" value="Non-Coffee">Non-Coffee</SelectItem>
@@ -896,38 +898,72 @@ export const HrdContent = () => {
                 </Select>
                 <div className="flex flex-col gap-2 my-2">
                   <p className="text-sm font-semibold text-gray-700">Upload Gambar Produk</p>
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors relative overflow-hidden group">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <div className="bg-emerald-100 p-2 rounded-full mb-2 group-hover:scale-110 transition-transform">
-                         <svg className="w-5 h-5 text-emerald-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                         </svg>
+                  {/* Image Preview */}
+                  {prodForm.image_url && prodForm.image_url.startsWith('http') && (
+                    <div className="relative w-full h-40 rounded-xl overflow-hidden border-2 border-emerald-500 mb-2">
+                      <img src={prodForm.image_url} alt="Preview" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setProdForm({...prodForm, image_url: ""})}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors shadow-lg"
+                      >
+                        ×
+                      </button>
+                      <div className="absolute bottom-0 left-0 right-0 bg-emerald-500 text-white text-[10px] text-center py-1 font-semibold">
+                        ✓ Gambar berhasil diupload
                       </div>
-                      <p className="mb-1 text-xs text-gray-500"><span className="font-semibold text-emerald-600">Klik untuk upload</span> atau drag & drop</p>
-                      <p className="text-[10px] text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                     </div>
-                    <input type="file" className="hidden" accept="image/*" onChange={(e) => {
-                      if(e.target.files && e.target.files[0]) {
-                        // Dummy handling for now, in a real app this would upload to storage
-                        // We will set the file name to the form just to simulate it works visually
-                        setProdForm({...prodForm, image_url: e.target.files[0].name})
-                      }
-                    }} />
-                    {prodForm.image_url && (
-                      <div className="absolute inset-0 bg-white/95 rounded-xl flex flex-col items-center justify-center border-2 border-emerald-500 z-10 animate-appearance-in">
-                        <BadgeCheck className="w-8 h-8 text-emerald-500 mb-2" />
-                        <p className="text-xs font-bold text-gray-700 text-center px-4 truncate max-w-full">
-                          {prodForm.image_url.split('/').pop() || prodForm.image_url}
-                        </p>
-                        <p className="text-[10px] text-emerald-600 font-medium mt-1">Klik untuk mengganti gambar</p>
+                  )}
+                  <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-colors relative overflow-hidden group ${uploadingImage ? 'border-emerald-500 bg-emerald-50' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}>
+                    {uploadingImage ? (
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="w-8 h-8 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+                        <p className="text-xs font-semibold text-emerald-600">Mengupload gambar...</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <div className="bg-emerald-100 p-2 rounded-full mb-2 group-hover:scale-110 transition-transform">
+                           <svg className="w-5 h-5 text-emerald-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                           </svg>
+                        </div>
+                        <p className="mb-1 text-xs text-gray-500"><span className="font-semibold text-emerald-600">Klik untuk upload</span> atau drag & drop</p>
+                        <p className="text-[10px] text-gray-400">JPG, PNG, WEBP atau GIF (MAX. 5MB)</p>
                       </div>
                     )}
+                    <input type="file" className="hidden" accept="image/*" disabled={uploadingImage} onChange={async (e) => {
+                      if(e.target.files && e.target.files[0]) {
+                        const file = e.target.files[0];
+                        setUploadingImage(true);
+                        try {
+                          const formData = new FormData();
+                          formData.append('file', file);
+                          const res = await fetch('/api/upload-product-image', {
+                            method: 'POST',
+                            body: formData,
+                          });
+                          const result = await res.json();
+                          if (result.success && result.url) {
+                            setProdForm((prev: any) => ({...prev, image_url: result.url}));
+                            showToast('Gambar berhasil diupload!');
+                          } else {
+                            showToast(result.error || 'Gagal upload gambar', 'error');
+                          }
+                        } catch (err) {
+                          console.error('Upload error:', err);
+                          showToast('Gagal upload gambar. Periksa koneksi.', 'error');
+                        } finally {
+                          setUploadingImage(false);
+                          e.target.value = '';
+                        }
+                      }
+                    }} />
                   </label>
                 </div>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>Batal</Button>
-                <Button color="primary" onPress={handleSaveProduct}>Simpan Produk</Button>
+                <Button color="primary" onPress={handleSaveProduct} isDisabled={uploadingImage}>Simpan Produk</Button>
               </ModalFooter>
             </>
           )}

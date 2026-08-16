@@ -198,11 +198,13 @@ export async function addProduct(formData: any) {
     is_discount: formData.is_discount || false,
     discount_amount: Number(formData.discount_amount) || 0,
     status: formData.status || 'Tersedia',
-    image_url: formData.image_url || null
+    image_url: formData.image_url || null,
+    description: formData.description || null
   }]).select();
 
   if (error) throw new Error(error.message);
   revalidatePath("/hrd");
+  revalidatePath("/");
   return data;
 }
 
@@ -217,11 +219,13 @@ export async function updateProduct(id: string, formData: any) {
     is_discount: formData.is_discount || false,
     discount_amount: Number(formData.discount_amount) || 0,
     status: formData.status || 'Tersedia',
-    image_url: formData.image_url || null
+    image_url: formData.image_url || null,
+    description: formData.description || null
   }).eq("id", id).select();
 
   if (error) throw new Error(error.message);
   revalidatePath("/hrd");
+  revalidatePath("/");
   return data;
 }
 
