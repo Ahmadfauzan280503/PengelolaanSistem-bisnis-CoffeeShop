@@ -269,7 +269,7 @@ export const LandingPage = () => {
           {/* CTA Button */}
           <div className="flex items-center justify-center gap-2 pt-2 sm:pt-4">
             <button 
-              onClick={() => router.push("/order/sultan-alauddin?mode=dinein&tableNumber=Meja%2064")}
+              onClick={() => document.getElementById('social')?.scrollIntoView({ behavior: 'smooth' })}
               className="bg-[#2D1B4E] hover:bg-[#E94E77] text-white rounded-full px-6 sm:px-8 py-3 sm:py-4 font-black text-xs sm:text-sm flex items-center gap-2 sm:gap-3 shadow-[6px_6px_0px_#E94E77] border-4 border-[#2D1B4E] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
             >
               Drink it up <span className="bg-white text-[#2D1B4E] w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-xs font-black">➔</span>
@@ -337,7 +337,7 @@ export const LandingPage = () => {
                     key={idx}
                     whileHover={can.hoverAnim}
                     className={`${can.size} ${can.rounded} relative overflow-hidden cursor-pointer shadow-2xl z-10 transition-shadow duration-300 bg-zinc-100 group`}
-                    onClick={() => router.push("/order/sultan-alauddin?mode=dinein&tableNumber=Meja%2064")}
+                    onClick={() => document.getElementById('social')?.scrollIntoView({ behavior: 'smooth' })}
                   >
                     <img 
                       src={displayImg} 
@@ -416,7 +416,7 @@ export const LandingPage = () => {
                       <p className="text-white/80 text-[10px] sm:text-xs font-semibold line-clamp-2 drop-shadow-sm">{product.description}</p>
                     )}
                     <Button 
-                      onClick={() => router.push("/order/sultan-alauddin?mode=dinein&tableNumber=Meja%2064")}
+                      onClick={() => window.open(`https://wa.me/6281356340877?text=Halo%20Admin%20Mycoffeeza%2C%20saya%20ingin%20memesan%20produk%20${encodeURIComponent(product.name)}`, '_blank')}
                       className={`w-full rounded-xl sm:rounded-2xl bg-white text-[#2D1B4E] font-black border-4 border-[#2D1B4E] shadow-[4px_4px_0px_#2D1B4E] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all py-4 sm:py-6 text-xs sm:text-sm`}
                     >
                       Beli Rp {product.price.toLocaleString("id-ID")}
@@ -499,7 +499,7 @@ export const LandingPage = () => {
               Kekuatan penuh kaleng Mana bersumber dari konsentrat bahan alami organik dan rasa buah murni pilihan. Bebas dari pemanis buatan, pemanis jagung tinggi fruktosa, dan bahan kimia berbahaya lainnya.
             </p>
             <Button 
-              onClick={() => router.push("/order/sultan-alauddin?mode=dinein&tableNumber=Meja%2064")}
+              onClick={() => document.getElementById('social')?.scrollIntoView({ behavior: 'smooth' })}
               className="rounded-2xl bg-[#2D1B4E] text-white border-4 border-[#2D1B4E] font-black px-6 sm:px-8 py-5 sm:py-6 shadow-[4px_4px_0px_#E94E77] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs"
             >
               Drink it up ➔
@@ -615,7 +615,7 @@ export const LandingPage = () => {
                   </p>
                   
                   <button
-                    onClick={() => router.push("/order/sultan-alauddin?mode=dinein&tableNumber=Meja%2064")}
+                    onClick={() => window.open(`https://wa.me/6281356340877?text=Halo%20Admin%20Mycoffeeza%2C%20saya%20ingin%20memesan%20produk%20${encodeURIComponent(product.name)}`, '_blank')}
                     className="w-full mt-2 bg-[#2D1B4E] text-white text-[10px] sm:text-xs font-black py-2.5 rounded-xl border-2 border-[#2D1B4E] hover:bg-[#E94E77] hover:border-[#E94E77] transition-colors flex items-center justify-center gap-1.5"
                   >
                     <ShoppingBag size={12} />
