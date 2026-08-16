@@ -1,8 +1,21 @@
 -- =========================================================================
--- SEED DATA: CREATE TESTING ACCOUNTS FOR 4 DASHBOARDS
--- Jalankan skrip ini di Supabase SQL Editor
+-- SCRIPT PERBAIKAN: MENAMBAHKAN user_id & SEED DATA
+-- Jalankan keseluruhan skrip ini di Supabase SQL Editor
 -- =========================================================================
 
+-- 1. Pastikan kolom user_id ada di tabel employees
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 
+    FROM information_schema.columns 
+    WHERE table_name = 'employees' AND column_name = 'user_id'
+  ) THEN
+    ALTER TABLE employees ADD COLUMN user_id UUID UNIQUE REFERENCES auth.users(id);
+  END IF;
+END $$;
+
+-- 2. Proses pembuatan Akun (Seed Data)
 DO $$
 DECLARE
   v_hrd_id UUID := gen_random_uuid();
