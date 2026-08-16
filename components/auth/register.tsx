@@ -1,13 +1,13 @@
 "use client";
 
-import { createAuthCookie } from "@/actions/auth.action";
+import { signUpWithEmail } from "@/actions/auth.action";
 import { RegisterSchema } from "@/helpers/schemas";
 import { RegisterFormType } from "@/helpers/types";
 import { Button, Input } from "@nextui-org/react";
 import { Formik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 export const Register = () => {
   const router = useRouter();
@@ -19,12 +19,19 @@ export const Register = () => {
     confirmPassword: "admin",
   };
 
+  const [errorMsg, setErrorMsg] = useState("");
+
   const handleRegister = useCallback(
     async (values: RegisterFormType) => {
-      // `values` contains name, email & password. You can use provider to register user
-
-      await createAuthCookie();
-      router.replace("/");
+      setErrorMsg("");
+      const res = await signUpWithEmail(values.email, values.password, values.name);
+      
+      if (res.error) {
+        setErrorMsg(res.error);
+        return;
+      }
+      
+      router.replace("/login?registered=true");
     },
     [router]
   );
@@ -40,6 +47,7 @@ export const Register = () => {
         {({ values, errors, touched, handleChange, handleSubmit }) => (
           <>
             <div className='flex flex-col w-1/2 gap-4 mb-4'>
+              {errorMsg && <div className="text-red-500 text-sm">{errorMsg}</div>}
               <Input
                 variant='bordered'
                 label='Name'

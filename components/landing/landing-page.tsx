@@ -6,6 +6,7 @@ import { Star, ArrowUpRight, ShoppingBag, Heart, User, Check, Sparkles, Flame, G
 import { Button, Card, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input, Textarea } from "@nextui-org/react";
 import { MessageCircle } from "lucide-react";
 import { getProducts } from "@/app/actions/hrd";
+import { getChatMessages, sendChatMessage } from "@/app/actions/chat";
 
 // Static fallback products for the "MY PRODUK BEANS" section
 const STATIC_PRODUCTS = [
@@ -70,21 +71,30 @@ export const LandingPage = () => {
   // Products from database for the beans section
   const [dbProducts, setDbProducts] = useState<any[]>([]);
 
-  const handleAddReview = () => {
+  const handleAddReview = async () => {
     if (!newReview.name || !newReview.branch || !newReview.message) return;
     
-    const review = {
-      id: Date.now(),
-      name: newReview.name,
-      branch: newReview.branch,
-      message: newReview.message,
-      time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-    };
-    
-    const updatedReviews = [review, ...reviews];
-    setReviews(updatedReviews);
-    localStorage.setItem("mana_live_reviews", JSON.stringify(updatedReviews));
-    setNewReview({ name: "", branch: "", message: "" });
+    try {
+      const sentMsg = await sendChatMessage({
+        sender_name: newReview.name,
+        sender_email: newReview.branch, // Using branch as email placeholder for now
+        message: newReview.message
+      });
+      
+      const review = {
+        id: sentMsg.id,
+        name: sentMsg.sender_name,
+        branch: sentMsg.sender_email,
+        message: sentMsg.message,
+        time: new Date(sentMsg.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+      };
+      
+      setReviews([review, ...reviews]);
+      setNewReview({ name: "", branch: "", message: "" });
+    } catch (e) {
+      console.error("Gagal mengirim pesan chat", e);
+      alert("Gagal mengirim pesan, silakan coba lagi.");
+    }
   };
 
   useEffect(() => {
@@ -111,10 +121,23 @@ export const LandingPage = () => {
       }
     }
     
-    const storedReviews = localStorage.getItem("mana_live_reviews");
-    if (storedReviews) {
-      setReviews(JSON.parse(storedReviews));
-    }
+    // Fetch chats from database
+    const fetchChats = async () => {
+      try {
+        const chats = await getChatMessages();
+        const mapped = chats.map(c => ({
+          id: c.id,
+          name: c.sender_name,
+          branch: c.sender_email,
+          message: c.message,
+          time: new Date(c.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+        })).reverse(); // Latest first
+        setReviews(mapped);
+      } catch (e) {
+        console.error("Failed to fetch chats:", e);
+      }
+    };
+    fetchChats();
     
     const storedPromoStr = localStorage.getItem("mana_promo_images");
     if (storedPromoStr) {
@@ -706,8 +729,9 @@ export const LandingPage = () => {
         onOpenChange={onChatOpenChange}
         scrollBehavior="inside"
         backdrop="blur"
+        placement="center"
         classNames={{
-          base: "bg-white border-4 border-[#2D1B4E] rounded-[32px] shadow-[8px_8px_0px_#2D1B4E] overflow-hidden mx-4",
+          base: "bg-white border-4 border-[#2D1B4E] rounded-[32px] shadow-[8px_8px_0px_#2D1B4E] overflow-hidden mx-4 my-auto max-h-[90vh]",
           header: "border-b-4 border-[#2D1B4E] bg-[#FCE7F3]",
           body: "p-4 sm:p-6",
         }}

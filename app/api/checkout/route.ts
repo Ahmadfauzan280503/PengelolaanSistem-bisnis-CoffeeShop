@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import * as yup from "yup";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+const getSupabase = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  return createClient(supabaseUrl, supabaseKey);
+};
 
 // Define schema validation for incoming checkout requests to secure inputs
 const checkoutSchema = yup.object().shape({
@@ -31,6 +32,7 @@ const checkoutSchema = yup.object().shape({
 
 export async function POST(request: Request) {
   try {
+    const supabase = getSupabase();
     const rawBody = await request.json();
     
     // 1. Validate inputs via Yup schema

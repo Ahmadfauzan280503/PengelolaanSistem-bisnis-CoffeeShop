@@ -2,16 +2,64 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // =====================================================================
-// RBAC_ENABLED: Set to true once login system is fully operational.
-// When false, all dashboard routes are accessible without authentication.
-// When true, unauthenticated users are redirected to /login.
+// RBAC Route Protection — Active in production
 // =====================================================================
-const RBAC_ENABLED = false;
+
+// Routes that require authentication and role check
+const PROTECTED_ROUTE_ROLES: Record<string, string[]> = {
+  "/hrd": ["Owner", "HRD"],
+  "/supervaisor": ["Owner", "Supervisor"],
+  "/finance": ["Owner", "Finance"],
+  "/cashier": ["Owner", "Kasir", "Leader", "Barista"],
+};
+
+// Auth routes (login, signup) — redirect away if already logged in
+const AUTH_ROUTES = ["/login", "/signup", "/register"];
+
+// Public routes — no auth needed
+const PUBLIC_ROUTES = ["/", "/order", "/api/checkout", "/api/webhook", "/unauthorized"];
+
+function isPublicRoute(pathname: string): boolean {
+  return PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
+}
+
+function isAuthRoute(pathname: string): boolean {
+  return AUTH_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
+}
+
+function getProtectedRouteRoles(pathname: string): string[] | null {
+  for (const [route, roles] of Object.entries(PROTECTED_ROUTE_ROLES)) {
+    if (pathname.startsWith(route)) {
+      return roles;
+    }
+  }
+  return null;
+}
+
+function getDefaultRouteForRole(roleName: string): string {
+  switch (roleName) {
+    case "Owner":
+    case "HRD":
+      return "/hrd";
+    case "Finance":
+      return "/finance";
+    case "Supervisor":
+      return "/supervaisor";
+    case "Kasir":
+    case "Leader":
+    case "Barista":
+      return "/cashier/cabang-1";
+    default:
+      return "/";
+  }
+}
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
+  let supabaseResponse = NextResponse.next({ request });
 
   // Only attempt Supabase session refresh if env vars are available
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -28,10 +76,10 @@ export async function updateSession(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        supabaseResponse = NextResponse.next({
-          request,
-        });
+        cookiesToSet.forEach(({ name, value }) =>
+          request.cookies.set(name, value)
+        );
+        supabaseResponse = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) =>
           supabaseResponse.cookies.set(name, value, options)
         );
@@ -44,32 +92,68 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // =====================================================================
-  // RBAC Route Protection (Only active when RBAC_ENABLED = true)
-  // =====================================================================
-  if (RBAC_ENABLED) {
-    const isAuthRoute =
-      request.nextUrl.pathname.startsWith("/login") ||
-      request.nextUrl.pathname.startsWith("/signup");
-    const isProtectedRoute =
-      request.nextUrl.pathname.startsWith("/hrd") ||
-      request.nextUrl.pathname.startsWith("/finance") ||
-      request.nextUrl.pathname.startsWith("/supervaisor") ||
-      request.nextUrl.pathname.startsWith("/cashier");
+  const pathname = request.nextUrl.pathname;
 
-    if (isProtectedRoute && !user) {
-      // Redirect unauthenticated users to login page
+  // =====================================================================
+  // 1. Public routes — always allow
+  // =====================================================================
+  if (isPublicRoute(pathname)) {
+    return supabaseResponse;
+  }
+
+  // =====================================================================
+  // 2. Auth routes — redirect to dashboard if already logged in
+  // =====================================================================
+  if (isAuthRoute(pathname)) {
+    if (user) {
+      // Fetch user role to redirect to correct dashboard
+      const { data: employee } = await supabase
+        .from("employees")
+        .select("id, roles(name)")
+        .eq("user_id", user.id)
+        .single();
+
+      const roleName = (employee?.roles as any)?.name || "Kasir";
+      const url = request.nextUrl.clone();
+      url.pathname = getDefaultRouteForRole(roleName);
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
+  // =====================================================================
+  // 3. Protected routes — require authentication + correct role
+  // =====================================================================
+  const requiredRoles = getProtectedRouteRoles(pathname);
+
+  if (requiredRoles) {
+    // Not logged in → redirect to login
+    if (!user) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
+      url.searchParams.set("redirect", pathname);
       return NextResponse.redirect(url);
     }
 
-    if (isAuthRoute && user) {
-      // Redirect authenticated users away from auth pages
-      // TODO: Fetch user role from 'employees' table and redirect to their specific dashboard
+    // Fetch user role from employees table
+    const { data: employee } = await supabase
+      .from("employees")
+      .select("id, roles(name)")
+      .eq("user_id", user.id)
+      .single();
+
+    const roleName = (employee?.roles as any)?.name;
+
+    // No employee record or no role → unauthorized
+    if (!roleName) {
       const url = request.nextUrl.clone();
-      url.pathname = "/hrd";
+      url.pathname = "/unauthorized";
       return NextResponse.redirect(url);
+    }
+
+    // Role doesn't have access → return 404 (hide the route existence)
+    if (!requiredRoles.includes(roleName)) {
+      return new NextResponse("Not Found", { status: 404 });
     }
   }
 

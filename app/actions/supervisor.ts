@@ -2,6 +2,8 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/actions/auth.action";
+import { sanitizeObject } from "@/utils/security";
 
 // ==========================================
 // INVENTORY

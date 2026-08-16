@@ -10,15 +10,12 @@ import {
 import React, { useCallback } from "react";
 import { DarkModeSwitch } from "./darkmodeswitch";
 import { useRouter } from "next/navigation";
-import { deleteAuthCookie } from "@/actions/auth.action";
+import { signOut } from "@/actions/auth.action";
 
 export const UserDropdown = () => {
-  const router = useRouter();
-
   const handleLogout = useCallback(async () => {
-    await deleteAuthCookie();
-    router.replace("/login");
-  }, [router]);
+    await signOut();
+  }, []);
 
   return (
     <Dropdown>

@@ -10,38 +10,47 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { GalleryVerticalEndIcon } from "lucide-react";
-import { signIn } from "next-auth/react";
-import { createAuthCookie } from "@/actions/auth.action";
-import { useRouter } from "next/navigation";
+import { GalleryVerticalEndIcon, AlertCircle, Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { loginWithEmail, loginWithPin } from "@/actions/auth.action";
 
 export const Login = ({
   className,
   ...props
 }: React.ComponentProps<"div">) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "";
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loginType, setLoginType] = useState<"pin" | "email">("pin");
+  const [pin, setPin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    try {
-      await createAuthCookie();
-      router.replace("/");
-    } catch (error) {
-      console.error("Login failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    setError(null);
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
     try {
-      await signIn("google", { callbackUrl: "/" });
-    } catch (error) {
-      console.error("Google login failed:", error);
+      const result = loginType === "pin" 
+        ? await loginWithPin(pin) 
+        : await loginWithEmail(email, password);
+
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+
+      if (result.success && result.redirectPath) {
+        // If there was a redirect param, use it; otherwise use role-based redirect
+        const target = redirectTo || result.redirectPath;
+        router.replace(target);
+      }
+    } catch (err: any) {
+      setError(err.message || "Login gagal. Silakan coba lagi.");
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +58,7 @@ export const Login = ({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form onSubmit={handleEmailLogin}>
+      <form onSubmit={handleLogin}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
             <a
@@ -59,58 +68,102 @@ export const Login = ({
               <div className="flex size-8 items-center justify-center rounded-md">
                 <GalleryVerticalEndIcon className="size-6" />
               </div>
-              <span className="sr-only">Supervisor Dashboard</span>
+              <span className="sr-only">KOTACOFFEE Dashboard</span>
             </a>
-            <h1 className="text-xl font-bold">Welcome back</h1>
+            <h1 className="text-xl font-bold">Selamat Datang</h1>
             <FieldDescription>
-              Login to your Supervisor Dashboard
+              Login ke Dashboard KOTACOFFEE.ID
             </FieldDescription>
           </div>
-          <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input
-              id="email"
-              type="email"
-              placeholder="admin@example.com"
-              required
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              required
-            />
-          </Field>
-          <Field>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-          </Field>
-          <FieldSeparator>Or</FieldSeparator>
-          <Field>
-            <Button
-              variant="outline"
+
+          {/* Login Type Tabs */}
+          <div className="flex bg-zinc-100 p-1 rounded-lg gap-1 mb-2">
+            <button
               type="button"
-              onClick={handleGoogleLogin}
-              disabled={isLoading}
+              onClick={() => { setLoginType("pin"); setError(null); }}
+              className={cn("flex-1 text-sm font-medium py-2 rounded-md transition-all", loginType === "pin" ? "bg-white shadow-sm text-zinc-900" : "text-zinc-500 hover:text-zinc-900")}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path
-                  d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                  fill="currentColor"
+              Staff Kantor (PIN)
+            </button>
+            <button
+              type="button"
+              onClick={() => { setLoginType("email"); setError(null); }}
+              className={cn("flex-1 text-sm font-medium py-2 rounded-md transition-all", loginType === "email" ? "bg-white shadow-sm text-zinc-900" : "text-zinc-500 hover:text-zinc-900")}
+            >
+              Cashier (Email)
+            </button>
+          </div>
+
+          {/* Error Alert */}
+          {error && (
+            <div className="flex items-center gap-2 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg">
+              <AlertCircle className="size-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {loginType === "pin" ? (
+            <Field>
+              <FieldLabel htmlFor="pin">PIN Akses</FieldLabel>
+              <Input
+                id="pin"
+                type="password"
+                placeholder="••••••"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                required
+                disabled={isLoading}
+                maxLength={6}
+                inputMode="numeric"
+              />
+            </Field>
+          ) : (
+            <>
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="nama@kotacoffee.id"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  autoComplete="email"
                 />
-              </svg>
-              Continue with Google
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  minLength={8}
+                  autoComplete="current-password"
+                />
+              </Field>
+            </>
+          )}
+          <Field>
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="size-4 animate-spin" />
+                  Signing in...
+                </span>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </Field>
         </FieldGroup>
       </form>
-      <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our{" "}
-        <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+      <FieldDescription className="px-6 text-center text-xs text-zinc-500">
+        Hubungi HRD untuk mendapatkan akun dashboard Anda.
       </FieldDescription>
     </div>
   );

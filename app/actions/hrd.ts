@@ -2,6 +2,8 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/actions/auth.action";
+import { sanitizeObject, stripHtmlTags } from "@/utils/security";
 
 // ==========================================
 // ROLES
@@ -41,17 +43,19 @@ export async function getEmployees() {
 }
 
 export async function addEmployee(formData: any) {
-  if (!formData.role_id || !formData.outlet_id) {
+  await requireRole(["Owner", "HRD"]);
+  const cleaned = sanitizeObject(formData);
+  if (!cleaned.role_id || !cleaned.outlet_id) {
     throw new Error("Pilih Jabatan dan Outlet terlebih dahulu");
   }
   const supabase = await createClient();
   const { data, error } = await supabase.from("employees").insert([{
-    name: formData.name,
-    role_id: formData.role_id,
-    outlet_id: formData.outlet_id,
-    status: formData.status || 'Active',
-    phone: formData.phone,
-    join_date: formData.join_date,
+    name: cleaned.name,
+    role_id: cleaned.role_id,
+    outlet_id: cleaned.outlet_id,
+    status: cleaned.status || 'Active',
+    phone: cleaned.phone,
+    join_date: cleaned.join_date,
   }]).select();
 
   if (error) throw new Error(error.message);
@@ -60,17 +64,19 @@ export async function addEmployee(formData: any) {
 }
 
 export async function updateEmployee(id: string, formData: any) {
-  if (!formData.role_id || !formData.outlet_id) {
+  await requireRole(["Owner", "HRD"]);
+  const cleaned = sanitizeObject(formData);
+  if (!cleaned.role_id || !cleaned.outlet_id) {
     throw new Error("Pilih Jabatan dan Outlet terlebih dahulu");
   }
   const supabase = await createClient();
   const { data, error } = await supabase.from("employees").update({
-    name: formData.name,
-    role_id: formData.role_id,
-    outlet_id: formData.outlet_id,
-    status: formData.status,
-    phone: formData.phone,
-    join_date: formData.join_date,
+    name: cleaned.name,
+    role_id: cleaned.role_id,
+    outlet_id: cleaned.outlet_id,
+    status: cleaned.status,
+    phone: cleaned.phone,
+    join_date: cleaned.join_date,
   }).eq("id", id).select();
 
   if (error) throw new Error(error.message);
@@ -79,6 +85,7 @@ export async function updateEmployee(id: string, formData: any) {
 }
 
 export async function deleteEmployee(id: string) {
+  await requireRole(["Owner", "HRD"]);
   const supabase = await createClient();
   const { error } = await supabase.from("employees").delete().eq("id", id);
   if (error) throw new Error(error.message);
@@ -188,18 +195,20 @@ export async function getProducts() {
 }
 
 export async function addProduct(formData: any) {
+  await requireRole(["Owner", "HRD"]);
+  const cleaned = sanitizeObject(formData);
   const supabase = await createClient();
   const { data, error } = await supabase.from("products").insert([{
-    name: formData.name,
-    category: formData.category,
-    price: Number(formData.price) || 0,
-    stock: Number(formData.stock) || 0,
-    is_bestseller: formData.is_bestseller || false,
-    is_discount: formData.is_discount || false,
-    discount_amount: Number(formData.discount_amount) || 0,
-    status: formData.status || 'Tersedia',
-    image_url: formData.image_url || null,
-    description: formData.description || null
+    name: cleaned.name,
+    category: cleaned.category,
+    price: Number(cleaned.price) || 0,
+    stock: Number(cleaned.stock) || 0,
+    is_bestseller: cleaned.is_bestseller || false,
+    is_discount: cleaned.is_discount || false,
+    discount_amount: Number(cleaned.discount_amount) || 0,
+    status: cleaned.status || 'Tersedia',
+    image_url: cleaned.image_url || null,
+    description: cleaned.description || null
   }]).select();
 
   if (error) throw new Error(error.message);
@@ -209,18 +218,20 @@ export async function addProduct(formData: any) {
 }
 
 export async function updateProduct(id: string, formData: any) {
+  await requireRole(["Owner", "HRD"]);
+  const cleaned = sanitizeObject(formData);
   const supabase = await createClient();
   const { data, error } = await supabase.from("products").update({
-    name: formData.name,
-    category: formData.category,
-    price: Number(formData.price) || 0,
-    stock: Number(formData.stock) || 0,
-    is_bestseller: formData.is_bestseller || false,
-    is_discount: formData.is_discount || false,
-    discount_amount: Number(formData.discount_amount) || 0,
-    status: formData.status || 'Tersedia',
-    image_url: formData.image_url || null,
-    description: formData.description || null
+    name: cleaned.name,
+    category: cleaned.category,
+    price: Number(cleaned.price) || 0,
+    stock: Number(cleaned.stock) || 0,
+    is_bestseller: cleaned.is_bestseller || false,
+    is_discount: cleaned.is_discount || false,
+    discount_amount: Number(cleaned.discount_amount) || 0,
+    status: cleaned.status || 'Tersedia',
+    image_url: cleaned.image_url || null,
+    description: cleaned.description || null
   }).eq("id", id).select();
 
   if (error) throw new Error(error.message);
@@ -230,6 +241,7 @@ export async function updateProduct(id: string, formData: any) {
 }
 
 export async function deleteProduct(id: string) {
+  await requireRole(["Owner", "HRD"]);
   const supabase = await createClient();
   const { error } = await supabase.from("products").delete().eq("id", id);
   if (error) throw new Error(error.message);

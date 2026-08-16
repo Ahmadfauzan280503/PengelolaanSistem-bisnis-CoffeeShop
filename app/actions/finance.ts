@@ -2,6 +2,8 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { requireRole } from "@/actions/auth.action";
+import { sanitizeObject } from "@/utils/security";
 
 // ==========================================
 // FINANCE OVERVIEW (Aggregated Stats)
@@ -96,15 +98,17 @@ export async function getTransactions(type?: string) {
 }
 
 export async function addTransaction(formData: any) {
+  await requireRole(["Owner", "Finance"]);
+  const cleaned = sanitizeObject(formData);
   const supabase = await createClient();
   const { data, error } = await supabase.from("finance_transactions").insert([{
-    type: formData.type,
-    category: formData.category,
-    amount: Number(formData.amount) || 0,
-    description: formData.description || null,
-    outlet_id: formData.outlet_id || null,
-    status: formData.status || "Lunas",
-    transaction_date: formData.transaction_date || new Date().toISOString().split("T")[0],
+    type: cleaned.type,
+    category: cleaned.category,
+    amount: Number(cleaned.amount) || 0,
+    description: cleaned.description || null,
+    outlet_id: cleaned.outlet_id || null,
+    status: cleaned.status || "Lunas",
+    transaction_date: cleaned.transaction_date || new Date().toISOString().split("T")[0],
   }]).select();
   if (error) throw new Error(error.message);
   revalidatePath("/finance");
@@ -112,15 +116,17 @@ export async function addTransaction(formData: any) {
 }
 
 export async function updateTransaction(id: string, formData: any) {
+  await requireRole(["Owner", "Finance"]);
+  const cleaned = sanitizeObject(formData);
   const supabase = await createClient();
   const { data, error } = await supabase.from("finance_transactions").update({
-    type: formData.type,
-    category: formData.category,
-    amount: Number(formData.amount) || 0,
-    description: formData.description,
-    outlet_id: formData.outlet_id || null,
-    status: formData.status,
-    transaction_date: formData.transaction_date,
+    type: cleaned.type,
+    category: cleaned.category,
+    amount: Number(cleaned.amount) || 0,
+    description: cleaned.description,
+    outlet_id: cleaned.outlet_id || null,
+    status: cleaned.status,
+    transaction_date: cleaned.transaction_date,
   }).eq("id", id).select();
   if (error) throw new Error(error.message);
   revalidatePath("/finance");
@@ -128,6 +134,7 @@ export async function updateTransaction(id: string, formData: any) {
 }
 
 export async function deleteTransaction(id: string) {
+  await requireRole(["Owner", "Finance"]);
   const supabase = await createClient();
   const { error } = await supabase.from("finance_transactions").delete().eq("id", id);
   if (error) throw new Error(error.message);
